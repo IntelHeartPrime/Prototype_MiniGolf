@@ -41,9 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets/Editor/Editor_project_processor1.cs" />
      <Compile Include="Assets/Editor/Editor_project_1.cs" />
      <Compile Include="Assets/Editor/Editor_project_btn1.cs" />
-     <Compile Include="Assets/Editor/Editor_project_processor1.cs" />
      <Reference Include="UnityEngine">
      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
