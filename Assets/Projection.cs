@@ -10,12 +10,15 @@ public class Projection : MonoBehaviour
     private PhysicsScene _physicsScene;
     [SerializeField] private Transform _obstacleParent;
 
+    [SerializeField] private GameObject _ball;
+    
     private void Start()
     {
         CreatePhysicsScene();
+        SimulateTrajectory(_ball.GetComponent<Ball>(), _ball.transform.position, new Vector3(0, 10, 10));
     }
 
-    // create PhysicsScene, copy physics gameobjects into it 
+    // create PhysicsScene, copy physics game objects into it 
     void CreatePhysicsScene()
     {
         _simulationScene =
@@ -28,5 +31,33 @@ public class Projection : MonoBehaviour
             ghostObj.GetComponent<Renderer>().enabled = false;
             SceneManager.MoveGameObjectToScene(ghostObj, _simulationScene);
         }
+    }
+
+    [SerializeField] private LineRenderer _line;
+    [SerializeField] private int _maxPhysicsFrameIterations;
+    
+    public void SimulateTrajectory(Ball balLPrefab, Vector3 pos, Vector3 velocity)
+    {   
+        Debug.Log(pos);
+        // create Ball and move it into PhysicsScene
+        var ghostObj = Instantiate(balLPrefab, pos, Quaternion.identity);
+        ghostObj.GetComponent<Renderer>().enabled = false;
+        SceneManager.MoveGameObjectToScene(ghostObj.gameObject, _simulationScene);
+        
+        ghostObj.Init(velocity);
+
+        _line.positionCount = _maxPhysicsFrameIterations;
+        for (int i = 0; i < _maxPhysicsFrameIterations; i++)
+        {
+            _physicsScene.Simulate(Time.deltaTime);
+            _line.SetPosition(i, ghostObj.transform.position);
+        }
+        
+        Destroy(ghostObj.gameObject);
+    }
+
+    private void Update()
+    {
+        //SimulateTrajectory(_ball.GetComponent<Ball>(), _ball.transform.position, new Vector3(0, 10, 10));
     }
 }

@@ -4,30 +4,20 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    
-    private Rigidbody _rb;
-    private LineRenderer _lineRenderer;
-    public List<Vector3> testPos;
+    [SerializeField] private Rigidbody _rb;
+    [SerializeField] private AudioSource _source;
+    [SerializeField] private AudioClip[] _clips;
+    [SerializeField] private GameObject _poofPrefab;
+    private bool _isGhost;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        _rb = this.transform.GetComponent<Rigidbody>();
-        _lineRenderer = this.transform.GetComponent<LineRenderer>();
-
+    public void Init(Vector3 velocity) {
+        _rb.AddForce(velocity, ForceMode.Impulse);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        _lineRenderer.positionCount = testPos.Count;
-        
-        for (int i = 0; i < testPos.Count; i++)
-        {
-            UnityEngine.Debug.Log(i);
-            UnityEngine.Debug.Log(testPos.Count);
-            _lineRenderer.SetPosition(i, testPos[i]);
-        }
+    public void OnCollisionEnter(Collision col) {
+        if (_isGhost) return;
+        Instantiate(_poofPrefab, col.contacts[0].point, Quaternion.Euler(col.contacts[0].normal));
+        _source.clip = _clips[Random.Range(0, _clips.Length)];
+        _source.Play();
     }
-
 }
